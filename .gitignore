@@ -1,0 +1,6 @@
+/node_modules
+/dist
+/coverage
+.env
+database.sqlite
+-- SQLite.sql
