@@ -9,7 +9,7 @@ const fastify = Fastify({
 await fastify.register(plugin);
 
 const port = process.env.PORT || 3000;
-const host = process.env.HOST || 'localhost';
+const host = process.env.HOST || '0.0.0.0';
 
 try {
   await fastify.listen({ port, host });
