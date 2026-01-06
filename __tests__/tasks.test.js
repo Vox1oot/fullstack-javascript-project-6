@@ -1,6 +1,97 @@
-import {
-  createRandomTask, signInUser, truncateTables, prepareData, setupCRUDTestSuite,
-} from './helpers/index.js'
+import { faker } from '@faker-js/faker'
+import { fastify } from 'fastify'
+import fs from 'fs'
+import path from 'path'
+import { URL } from 'url'
+import init from '../server/plugin.js'
+
+const getFixturePath = filename => path.join('..', '__fixtures__', filename)
+const readFixture = filename => fs.readFileSync(new URL(getFixturePath(filename), import.meta.url), 'utf-8').trim()
+const getFixtureData = filename => JSON.parse(readFixture(filename))
+
+const TEST_PASSWORDS = {
+  existing: 'O6AvLIQL1cbzrre',
+}
+
+const createRandomName = () => ({ name: faker.word.adjective() })
+
+const createRandomTask = {
+  new() {
+    return {
+      name: faker.lorem.sentence(),
+      description: faker.lorem.paragraph(),
+      statusId: faker.number.int({ min: 1, max: 3 }),
+      executorId: faker.number.int({ min: 1, max: 3 }),
+    }
+  },
+  invalid() {
+    return {
+      name: '',
+      description: faker.lorem.paragraph(),
+      statusId: faker.number.int({ min: 1, max: 3 }),
+      executorId: faker.number.int({ min: 1, max: 3 }),
+    }
+  },
+  prepare() {
+    return {
+      name: faker.lorem.sentence(),
+      description: faker.lorem.paragraph(),
+      statusId: faker.number.int({ min: 1, max: 3 }),
+      creatorId: 2,
+      executorId: faker.number.int({ min: 1, max: 3 }),
+    }
+  },
+}
+
+const prepareUsersData = async (app) => {
+  const { knex } = app.objection
+  await knex('users').insert(getFixtureData('users.mock.json'))
+}
+
+const prepareData = async (app) => {
+  const { knex } = app.objection
+  await knex('users').insert(getFixtureData('users.mock.json'))
+  await knex('statuses').insert(Array.from({ length: 3 }, createRandomName))
+  await knex('tasks').insert(Array.from({ length: 1 }, createRandomTask.prepare))
+  await knex('labels').insert(Array.from({ length: 3 }, createRandomName))
+}
+
+const signInUser = async (app) => {
+  await prepareUsersData(app)
+  const responseSignIn = await app.inject({
+    method: 'POST',
+    url: '/session',
+    payload: {
+      data: {
+        email: 'lawrence.kulas87@outlook.com',
+        password: TEST_PASSWORDS.existing,
+      },
+    },
+  })
+
+  const [sessionCookie] = responseSignIn.cookies
+  const { name, value } = sessionCookie
+  return { [name]: value }
+}
+
+const truncateTables = async (knex) => {
+  await knex('tasks').truncate()
+  await Promise.all([
+    knex('users').truncate(),
+    knex('statuses').truncate(),
+    knex('labels').truncate(),
+  ])
+}
+
+const setupCRUDTestSuite = async () => {
+  const app = fastify({
+    exposeHeadRoutes: false,
+    logger: false,
+  })
+  await init(app)
+  const { knex, models } = app.objection
+  return { app, knex, models }
+}
 
 describe('CRUD операции с задачами', () => {
   let app
