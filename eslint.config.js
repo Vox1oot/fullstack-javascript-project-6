@@ -4,6 +4,9 @@ import globals from 'globals'
 import jest from 'eslint-plugin-jest'
 
 export default [
+  {
+    ignores: ['dist/**/*'],
+  },
   js.configs.recommended,
   {
     languageOptions: {
@@ -19,7 +22,11 @@ export default [
       '@stylistic': stylistic,
     },
     rules: {
-      'no-unused-vars': 'error',
+      'no-unused-vars': ['error', { 
+        argsIgnorePattern: '^_',
+        varsIgnorePattern: '^_',
+        ignoreRestSiblings: true, 
+      }],
       'prefer-const': 'error',
       '@stylistic/indent': ['error', 2],
       '@stylistic/semi': ['error', 'never'],
