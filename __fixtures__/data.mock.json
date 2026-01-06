@@ -1,0 +1,18 @@
+{
+  "users": {
+    "new": {
+      "firstName": "Anna",
+      "lastName": "Volkov",
+      "email": "anna.volkov@example.com"
+    },
+    "existing": {
+      "firstName": "Dmitry",
+      "lastName": "Petrov",
+      "email": "dmitry.petrov@mail.ru"
+    }
+  },
+  "update": {
+    "firstName": "Sergey",
+    "lastName": "Ivanov"
+  }
+}
