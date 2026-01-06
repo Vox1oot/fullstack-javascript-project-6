@@ -1,0 +1,55 @@
+import js from '@eslint/js'
+import stylistic from '@stylistic/eslint-plugin'
+import globals from 'globals'
+import jest from 'eslint-plugin-jest'
+
+export default [
+  js.configs.recommended,
+  {
+    languageOptions: {
+      ecmaVersion: 'latest',
+      sourceType: 'module',
+      globals: {
+        ...globals.node,
+        ...globals.es2021,
+        ...globals.jest,
+      },
+    },
+    plugins: {
+      '@stylistic': stylistic,
+    },
+    rules: {
+      'no-unused-vars': 'error',
+      'prefer-const': 'error',
+      '@stylistic/indent': ['error', 2],
+      '@stylistic/semi': ['error', 'never'],
+      '@stylistic/arrow-parens': [2, 'as-needed', { requireForBlockBody: true }],
+      '@stylistic/quote-props': ['error', 'as-needed'],
+      '@stylistic/operator-linebreak': ['error', 'before'],
+      '@stylistic/brace-style': ['error', 'stroustrup'],
+      '@stylistic/quotes': ['error', 'single'],
+      '@stylistic/comma-dangle': ['error', 'always-multiline'],
+      '@stylistic/object-curly-spacing': ['error', 'always'],
+      '@stylistic/array-bracket-spacing': ['error', 'never'],
+      '@stylistic/arrow-spacing': ['error', { before: true, after: true }],
+      '@stylistic/no-multiple-empty-lines': ['error', { max: 1 }],
+      '@stylistic/eol-last': ['error', 'always'],
+    },
+  },
+  {
+    files: ['src/bin/*.js'],
+    rules: {
+      'no-console': 'off',
+    },
+  },
+  {
+    files: ['__tests__/**/*.js', '**/*.test.js'],
+    plugins: {
+      jest,
+    },
+    rules: {
+      ...jest.configs.recommended.rules,
+      'no-restricted-syntax': 'off',
+    },
+  },
+]
