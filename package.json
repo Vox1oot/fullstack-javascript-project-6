@@ -7,7 +7,7 @@
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "webpack --mode=production",
-    "start": "fastify start server/plugin.js -l info -a 0.0.0.0 -p ${PORT:-5000}",
+    "start": "fastify start server/plugin.js -l info -a 0.0.0.0 -p $PORT",
     "migrate": "knex migrate:latest --env=production",
     "migrate:rollback": "knex migrate:rollback --env=production",
     "seed": "knex seed:run --env=production",
