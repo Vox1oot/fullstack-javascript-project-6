@@ -46,6 +46,7 @@
     "fastify-cli": "^6.x",
     "fastify-method-override": "^1.x",
     "fastify-objectionjs": "^2.0.1",
+    "fastify-plugin": "^5.1.0",
     "i18next": "^21.x",
     "knex": "^2.4.0",
     "mini-css-extract-plugin": "^2.x",
