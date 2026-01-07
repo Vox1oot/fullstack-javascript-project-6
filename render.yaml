@@ -11,12 +11,10 @@ services:
     plan: free
     region: oregon
     buildCommand: npm ci && npm run build
-    startCommand: make start-prod
+    startCommand: npm run migrate && npm start
     envVars:
       - key: NODE_ENV
         value: production
-      - key: NODE_VERSION
-        value: 22.16.0
       - key: SESSION_SECRET
         generateValue: true
       - key: DATABASE_URL

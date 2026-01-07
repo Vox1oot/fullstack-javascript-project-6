@@ -1,10 +1,8 @@
-.PHONY: setup install build prepare start \
-        dev-migrate dev-rollback dev-reset \
-        prod-migrate prod-rollback prod-reset prod-deploy \
-        start-backend start-backend-prod start-frontend start-frontend-prod \
-        lint test test-coverage db-migrate db-reset
+.PHONY: 
+	setup prepare install build start start-dev start-prod migrate-dev migrate-prod rollback reset lint
 
-setup: prepare install build
+setup: 
+	prepare install build
 
 prepare:
 	cp -n .env.example .env || true
@@ -15,66 +13,32 @@ install:
 build:
 	npm run build
 
-prod-migrate:
-	@npm run migrate
-
-prod-rollback:
-	@npm run migrate:rollback
-
-prod-reset:
-	@npm run reset
-
-migrate:
-	@npm run migrate
-
-start-prod: 
-	@start-backend-prod
-
-start-backend-prod:
-	@npm start
-
-start-frontend-prod:
-	@npx webpack --mode=production
-
-dev-migrate:
-	@npm run dev:migrate
-
-dev-rollback:
-	@npm run dev:rollback
-
-dev-reset:
-	@npm run dev:reset
-
-start-backend:
-	@echo "🔧 Starting backend server..."
-	@npm run dev:backend
-
-start-frontend:
-	@echo "🔧 Starting frontend watcher..."
-	@npm run dev:frontend
-
 start:
-	@echo "🚀 Starting frontend and backend..."
+	npm run start
+
+start-dev:
 	@bash -c '\
 		trap "kill 0" EXIT; \
-		echo "🔧 Starting frontend watcher..."; \
 		npm run dev:frontend & \
-		echo "🔧 Starting backend server..."; \
 		npm run dev:backend & \
 		wait \
 	'
 
+start-prod:
+	npm run start
+
+
+migrate-dev:
+	npm run dev:migrate
+
+migrate-prod:
+	npm run migrate
+
+rollback:
+	npm run dev:rollback
+
+reset:
+	npm run dev:reset
+
 lint:
-	@echo "🔍 Linting source code and fix..."
 	npm run lint:fix
-
-test:
-	@echo "🧪 Running tests..."
-	npm test
-
-test-coverage:
-	@echo "📊 Running tests with coverage..."
-	npm run test:coverage
-
-db-migrate: dev-migrate
-db-reset: dev-reset
