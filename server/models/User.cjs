@@ -19,7 +19,6 @@ module.exports = class User extends unique(BaseModel) {
         firstName: { type: 'string', minLength: 1 },
         lastName: { type: 'string', minLength: 1 },
         email: { type: 'string', minLength: 1 },
-        password: { type: 'string', minLength: 3 },
         createdAt: { type: 'string', format: 'date-time' },
         updatedAt: { type: 'string', format: 'date-time' },
       },
@@ -65,17 +64,19 @@ module.exports = class User extends unique(BaseModel) {
     },
   }
 
-  async $beforeInsert() {
-    await super.$beforeInsert()
+  async $beforeInsert(queryContext) {
+    await super.$beforeInsert(queryContext)
     if (this.password) {
       this.passwordDigest = await hashPassword(this.password)
+      delete this.password
     }
   }
 
-  async $beforeUpdate() {
-    await super.$beforeUpdate()
+  async $beforeUpdate(opt, queryContext) {
+    await super.$beforeUpdate(opt, queryContext)
     if (this.password) {
       this.passwordDigest = await hashPassword(this.password)
+      delete this.password
     }
   }
 

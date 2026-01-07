@@ -25,9 +25,10 @@ export default (app) => {
         request.flash('info', i18next.t('flash.users.create.success'))
         reply.redirect('/')
       }
-      catch ({ data }) {
+      catch (error) {
+        console.error(error)
         request.flash('error', i18next.t('flash.users.create.error'))
-        reply.render('users/new', { user: request.body.data, errors: data })
+        reply.render('users/new', { user: request.body.data, errors: error.data })
       }
 
       return reply
