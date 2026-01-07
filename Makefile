@@ -27,7 +27,8 @@ prod-reset:
 migrate:
 	@npm run migrate
 
-start-prod: start-backend-prod
+start-prod: 
+	@start-backend-prod
 
 start-backend-prod:
 	@npm start
