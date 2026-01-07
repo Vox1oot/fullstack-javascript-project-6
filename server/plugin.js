@@ -18,8 +18,6 @@ import getHelpers from './helpers/index.js'
 import * as knexConfig from '../knexfile.js'
 import models from './models/index.js'
 import FormStrategy from './lib/passportStrategies/FormStrategy.js'
-import { SessionConfig } from './config/session.config.js'
-import { AuthConfig } from './config/auth.config.js'
 import { FLASH_KEYS } from './constants/flashKeys.js'
 
 const __dirname = fileURLToPath(path.dirname(import.meta.url))
@@ -76,7 +74,7 @@ const setupAuthMiddleware = (app) => {
   const authenticateMiddleware = (...args) => fastifyPassport.authenticate(
     'form',
     {
-      ...AuthConfig,
+      failureRedirect: '/',
       failureFlash: i18next.t(FLASH_KEYS.auth.error),
     },
   )(...args)
@@ -117,7 +115,7 @@ const setupPassport = async (app) => {
 const registerPlugins = async (app) => {
   await app.register(fastifySensible)
   await app.register(fastifyFormbody, { parser: qs.parse })
-  await app.register(fastifySecureSession, SessionConfig)
+  await app.register(fastifySecureSession, { secret: process.env.SESSION_SECRET, cookie: { path: '/' } })
   await setupPassport(app)
   await app.register(fastifyMethodOverride)
   await app.register(fastifyObjectionjs, {
