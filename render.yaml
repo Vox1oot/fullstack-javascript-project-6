@@ -10,7 +10,8 @@ services:
     env: node
     plan: free
     region: oregon
-    buildCommand: NODE_ENV=production make setup
+    buildCommand: npm ci && npm run build
+    preDeployCommand: npm run migrate
     startCommand: make start-prod
     envVars:
       - key: NODE_ENV
