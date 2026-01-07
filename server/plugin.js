@@ -20,6 +20,7 @@ import models from './models/index.js'
 import FormStrategy from './lib/passportStrategies/FormStrategy.js'
 import { SessionConfig } from './config/session.config.js'
 import { AuthConfig } from './config/auth.config.js'
+import { FLASH_KEYS } from './constants/flashKeys.js'
 
 const __dirname = fileURLToPath(path.dirname(import.meta.url))
 const mode = process.env.NODE_ENV || 'development'
@@ -76,13 +77,13 @@ const setupAuthMiddleware = (app) => {
     'form',
     {
       ...AuthConfig,
-      failureFlash: i18next.t('flash.authError'),
+      failureFlash: i18next.t(FLASH_KEYS.auth.error),
     },
   )(...args)
 
   const requireCurrentUserMiddleware = (req, reply, done) => {
     if (req.user.id !== Number(req.params.id)) {
-      req.flash('error', i18next.t('flash.notCurrentUser'))
+      req.flash('error', i18next.t(FLASH_KEYS.auth.notCurrentUser))
       reply.redirect('/users')
       return reply
     }

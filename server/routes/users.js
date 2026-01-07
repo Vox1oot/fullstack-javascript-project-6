@@ -1,4 +1,5 @@
 import i18next from 'i18next'
+import { FLASH_KEYS } from '../constants/flashKeys.js'
 
 export default (app) => {
   const objectionModels = app.objection.models
@@ -22,12 +23,12 @@ export default (app) => {
     .post('/users', async (request, reply) => {
       try {
         await objectionModels.user.query().insert(request.body.data)
-        request.flash('info', i18next.t('flash.users.create.success'))
+        request.flash('info', i18next.t(FLASH_KEYS.users.create.success))
         reply.redirect('/')
       }
       catch (error) {
         console.error(error)
-        request.flash('error', i18next.t('flash.users.create.error'))
+        request.flash('error', i18next.t(FLASH_KEYS.users.create.error))
         reply.render('users/new', { user: request.body.data, errors: error.data })
       }
 
@@ -38,11 +39,11 @@ export default (app) => {
       const user = await objectionModels.user.query().findOne({ id })
       try {
         await user.$query().patch(request.body.data)
-        request.flash('info', i18next.t('flash.users.update.success'))
+        request.flash('info', i18next.t(FLASH_KEYS.users.update.success))
         reply.redirect('/users')
       }
       catch ({ data }) {
-        request.flash('error', i18next.t('flash.users.update.error'))
+        request.flash('error', i18next.t(FLASH_KEYS.users.update.error))
         reply.render('users/edit', { user, errors: data })
       }
       return reply
@@ -54,12 +55,12 @@ export default (app) => {
       try {
         await user.$query().delete()
         request.logOut()
-        request.flash('info', i18next.t('flash.users.delete.success'))
+        request.flash('info', i18next.t(FLASH_KEYS.users.delete.success))
         reply.redirect('/users')
       }
       catch (error) {
         console.error(error)
-        request.flash('error', i18next.t('flash.users.delete.error'))
+        request.flash('error', i18next.t(FLASH_KEYS.users.delete.error))
         reply.redirect('/users')
       }
       return reply

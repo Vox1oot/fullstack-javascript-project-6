@@ -1,4 +1,5 @@
 import i18next from 'i18next'
+import { FLASH_KEYS } from '../constants/flashKeys.js'
 
 export default (app) => {
   const objectionModels = app.objection.models
@@ -93,11 +94,11 @@ export default (app) => {
               noUpdate: ['labels'],
             })
         })
-        request.flash('info', i18next.t('flash.tasks.create.success'))
+        request.flash('info', i18next.t(FLASH_KEYS.tasks.create.success))
         reply.redirect('/tasks')
       }
       catch ({ data }) {
-        request.flash('error', i18next.t('flash.tasks.create.error'))
+        request.flash('error', i18next.t(FLASH_KEYS.tasks.create.error))
         const { executors, statuses, labels } = await loadSelectOptions()
         reply.render('tasks/new', {
           task, executors, statuses, labels, errors: data,
@@ -128,11 +129,11 @@ export default (app) => {
               noUpdate: ['labels'],
             })
         })
-        request.flash('info', i18next.t('flash.tasks.update.success'))
+        request.flash('info', i18next.t(FLASH_KEYS.tasks.update.success))
         reply.redirect('/tasks')
       }
       catch ({ data }) {
-        request.flash('error', i18next.t('flash.tasks.update.error'))
+        request.flash('error', i18next.t(FLASH_KEYS.tasks.update.error))
         task.$set({
           ...dataTask,
           labels: [...labelIds].map(labelId => ({ id: parseInt(labelId, 10) })),
@@ -150,7 +151,7 @@ export default (app) => {
       const task = await objectionModels.task.query().findById(id)
 
       if (currentUserId !== task.creatorId) {
-        request.flash('error', i18next.t('flash.tasks.delete.errorAccess'))
+        request.flash('error', i18next.t(FLASH_KEYS.tasks.delete.errorAccess))
         reply.redirect('/tasks')
         return reply
       }
@@ -160,12 +161,12 @@ export default (app) => {
           await task.$relatedQuery('labels', trx).unrelate()
           await task.$query(trx).delete()
         })
-        request.flash('info', i18next.t('flash.tasks.delete.success'))
+        request.flash('info', i18next.t(FLASH_KEYS.tasks.delete.success))
         reply.redirect('/tasks')
       }
       catch (error) {
         console.error(error)
-        request.flash('error', i18next.t('flash.tasks.delete.error'))
+        request.flash('error', i18next.t(FLASH_KEYS.tasks.delete.error))
       }
       return reply
     })
