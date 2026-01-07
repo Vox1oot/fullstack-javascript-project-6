@@ -1,7 +1,7 @@
 const objectionUnique = require('objection-unique')
 
 const BaseModel = require('./BaseModel.cjs')
-const { hashPassword, verifyPassword } = require('../lib/secure.cjs')
+const { hashPassword, verifyPassword } = require('../auth/password.cjs')
 
 const unique = objectionUnique({ fields: ['email'] })
 

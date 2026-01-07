@@ -4,7 +4,7 @@ import { fastify } from 'fastify'
 import fs from 'fs'
 import path from 'path'
 import { URL } from 'url'
-import hashPassword from '../server/lib/secure.cjs'
+import { hashPassword } from '../server/auth/password.cjs'
 import init from '../server/plugin.js'
 
 const getFixturePath = filename => path.join('..', '__fixtures__', filename)
@@ -114,12 +114,12 @@ describe('CRUD операции с пользователями', () => {
       expect(response.statusCode).toBe(302)
       expect(response.headers.location).toBe('/')
 
-      const expected = {
-        ..._.omit(params, 'password'),
-        passwordDigest: hashPassword(params.password),
-      }
       const user = await models.user.query().findOne({ email: params.email })
-      expect(user).toMatchObject(expected)
+      expect(user.email).toBe(params.email)
+      expect(user.firstName).toBe(params.firstName)
+      expect(user.lastName).toBe(params.lastName)
+      expect(user.passwordDigest).toBeDefined()
+      expect(await user.verifyPassword(params.password)).toBe(true)
     })
 
     it('должен выбрасывать ошибку валидации для неверных данных', async () => {
@@ -215,12 +215,10 @@ describe('CRUD операции с пользователями', () => {
       expect(response.statusCode).toBe(302)
       expect(response.headers.location).toBe('/users')
 
-      const expected = {
-        ..._.omit(updateParams, 'password'),
-        passwordDigest: hashPassword(updateParams.password),
-      }
       const updatedUser = await models.user.query().findById(2)
-      expect(updatedUser).toMatchObject(expected)
+      expect(updatedUser.firstName).toBe(updateParams.firstName)
+      expect(updatedUser.lastName).toBe(updateParams.lastName)
+      expect(await updatedUser.verifyPassword(updateParams.password)).toBe(true)
     })
 
     it('должен выбрасывать ошибку при обновлении на дублирующийся email', async () => {

@@ -1,6 +1,6 @@
 import { Strategy } from '@fastify/passport'
 
-export default class FormStrategy extends Strategy {
+export default class AuthStrategy extends Strategy {
   constructor(name, app) {
     super(name)
     this.app = app

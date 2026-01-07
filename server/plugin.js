@@ -18,7 +18,7 @@ import formatDate from './helpers/formatDate.js'
 import isEmpty from './helpers/isEmpty.js'
 import * as knexConfig from '../knexfile.js'
 import models from './models/index.js'
-import FormStrategy from './lib/passportStrategies/FormStrategy.js'
+import AuthStrategy from './auth/AuthStrategy.js'
 import { FLASH_KEYS } from './constants/flashKeys.js'
 
 const __dirname = fileURLToPath(path.dirname(import.meta.url))
@@ -107,7 +107,7 @@ const setupPassport = async (app) => {
     user => app.objection.models.user.query().findById(user.id),
   )
   fastifyPassport.registerUserSerializer(user => Promise.resolve(user))
-  fastifyPassport.use(new FormStrategy('form', app))
+  fastifyPassport.use(new AuthStrategy('form', app))
 
   await app.register(fastifyPassport.initialize())
   await app.register(fastifyPassport.secureSession())
