@@ -19,19 +19,15 @@ export default () => ({
 
   formatDate(str) {
     const date = new Date(str)
-
     const options = {
+      day: '2-digit',
+      month: 'long',
       year: 'numeric',
-      month: 'numeric',
-      day: 'numeric',
-      hour: 'numeric',
+      hour: '2-digit',
       minute: '2-digit',
-      second: '2-digit',
-      hour12: true,
+      hour12: false,
     }
-
-    const formatter = new Intl.DateTimeFormat('en-US', options)
-    return formatter.format(date)
+    return date.toLocaleString('ru-RU', options).replace(' г.,', ' в')
   },
 
   isEmpty(value) {
