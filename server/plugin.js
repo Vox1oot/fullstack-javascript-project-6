@@ -6,17 +6,16 @@ import knex from 'knex'
 import * as knexConfig from '../knexfile.js'
 
 export default async (app, _options) => {
-  // Run migrations in production
   if (process.env.NODE_ENV === 'production') {
     const db = knex(knexConfig.production)
     try {
       await db.migrate.latest()
       console.log('✅ Database migrations completed')
-    } 
+    }
     catch (error) {
       console.error('❌ Migration failed:', error)
       throw error
-    } 
+    }
     finally {
       await db.destroy()
     }
