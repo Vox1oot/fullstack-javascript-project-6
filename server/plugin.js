@@ -14,7 +14,8 @@ import Pug from 'pug'
 import i18next from 'i18next'
 import ru from './locales/ru.js'
 import addRoutes from './routes/index.js'
-import getHelpers from './helpers/index.js'
+import formatDate from './helpers/formatDate.js'
+import isEmpty from './helpers/isEmpty.js'
 import * as knexConfig from '../knexfile.js'
 import models from './models/index.js'
 import FormStrategy from './lib/passportStrategies/FormStrategy.js'
@@ -31,14 +32,15 @@ const PATHS = {
 const fastifyPassport = new Authenticator()
 
 const setUpViews = (app) => {
-  const helpers = getHelpers(app)
   app.register(fastifyView, {
     engine: {
       pug: Pug,
     },
     includeViewExtension: true,
     defaultContext: {
-      ...helpers,
+      formatDate,
+      isEmpty,
+      t: key => i18next.t(key),
       assetPath: filename => `/assets/${filename}`,
     },
     templates: PATHS.views,

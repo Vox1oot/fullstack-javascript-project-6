@@ -6,15 +6,16 @@ mixin formFor(entity = null)
     block
 
 mixin input(entity, propertyName, errors = {})
-  - propertyErrors = get(errors, propertyName)
+  - propertyErrors = errors?.[propertyName]
   - classLine = 'form-control' + (isEmpty(propertyErrors) ? '' : ' is-invalid')
   - inputId = getInputId(propertyName)
+  - inputValue = entity?.[propertyName] !== undefined ? entity[propertyName] : ''
   .form-floating.mb-3(class=(errors[propertyName] && 'has-danger'))
     input(
       id= inputId
       name=getInputName(propertyName)
       class=classLine
-      value=get(entity, propertyName, '')
+      value=inputValue
       placeholder=t(`forms.${propertyName}`)
     )&attributes(attributes)
     if !isEmpty(propertyErrors)
@@ -24,9 +25,10 @@ mixin input(entity, propertyName, errors = {})
     )= t(`forms.${propertyName}`)
 
 mixin inputTextarea(entity, propertyName, errors = {})
-  - propertyErrors = get(errors, propertyName)
+  - propertyErrors = errors?.[propertyName]
   - classLine = 'form-control' + (isEmpty(propertyErrors) ? '' : ' is-invalid')
   - inputId = getInputId(propertyName)
+  - textareaValue = entity?.[propertyName] !== undefined ? entity[propertyName] : ''
   .mb-3(class=(errors[propertyName] && 'has-danger'))
     label(
       for= inputId
@@ -36,12 +38,12 @@ mixin inputTextarea(entity, propertyName, errors = {})
       name=getInputName(propertyName)
       class=classLine
       rows="3"
-    )= get(entity, propertyName, '')
+    )= textareaValue
     if !isEmpty(propertyErrors)
       .invalid-feedback= propertyErrors.map(({ message }) => message).join('. ')
 
 mixin inputSelect(entities, propertyName, errors = {}, object)
-  - propertyErrors = get(errors, propertyName)
+  - propertyErrors = errors?.[propertyName]
   - inputId = getInputId(propertyName)
   - classLine = 'form-control' + (isEmpty(propertyErrors) ? '' : ' is-invalid')
   .mb-3(class=(errors[propertyName] && 'has-danger'))
@@ -55,13 +57,13 @@ mixin inputSelect(entities, propertyName, errors = {}, object)
       each entity in entities
         option(
           value= entity.id
-          selected= (Number(object[propertyName]) === Number(entity.id)) ? 'selected' : false 
+          selected= (Number(object[propertyName]) === Number(entity.id)) ? 'selected' : false
           )= entity.name || entity.fullName
     if !isEmpty(propertyErrors)
       .invalid-feedback= propertyErrors.map(({ message }) => message).join('. ')
 
 mixin inputSelectMultipleLabels(entities, propertyName, errors = {}, object)
-  - propertyErrors = get(errors, convertPropertyName(propertyName))
+  - propertyErrors = errors?.labels
   - inputId = getInputId(propertyName)
   - classLine = 'form-select' + (isEmpty(propertyErrors) ? '' : ' is-invalid')
   .mb-3(class=(errors[propertyName] && 'has-danger'))
@@ -75,7 +77,7 @@ mixin inputSelectMultipleLabels(entities, propertyName, errors = {}, object)
       each entity in entities
         option(
           value= entity.id
-          selected= (object[propertyName] && object[propertyName].some(({ id }) => id === entity.id)) ? 'selected' : false 
+          selected= (object[propertyName] && object[propertyName].some(({ id }) => id === entity.id)) ? 'selected' : false
           )= entity.name
     if !isEmpty(propertyErrors)
       .invalid-feedback= propertyErrors.map(({ message }) => message).join('. ')

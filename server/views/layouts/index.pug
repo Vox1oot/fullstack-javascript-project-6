@@ -36,7 +36,7 @@ html(lang="en")
 
       each messages, type in reply.flash() || []
         each message in messages
-          div.alert(class=`alert-${getAlertClass(type)}`)= message
+          div.alert(class=`alert-${type === 'error' ? 'danger' : type}`)= message
 
       h1.display-4.fw-bold.mt-4
         block header
