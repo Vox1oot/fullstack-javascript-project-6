@@ -18,7 +18,7 @@
 ## Требования
 
 - Node.js (последняя LTS версия)
-- База данных PostgreSQL
+- База данных PostgreSQL (для production) или SQLite (для разработки)
 - Менеджер пакетов npm
 
 ## Установка
@@ -29,42 +29,56 @@ git clone https://github.com/Vox1oot/fullstack-javascript-project-6.git
 cd fullstack-javascript-project-6
 ```
 
-2. Установите зависимости:
+2. Выполните установку зависимостей:
 ```bash
-npm install
+make install
 ```
 
-3. Настройте переменные окружения:
-```bash
-# Отредактируйте .env, добавив данные для подключения к БД и другие настройки
-```
-
-4. Настройте базу данных:
-```bash
-npm run db:migrate
-npm run db:seed
+3. Настройте переменные окружения в файле `.env`:
+```env
+PORT=3000
+HOST=0.0.0.0
+NODE_ENV=development
+SESSION_SECRET=your-secret-key-change-in-production
+ROLLBAR_ACCESS_TOKEN=your-rollbar-access-token
 ```
 
 ## Использование
 
 ### Разработка
 ```bash
-npm run dev
+make migrate-dev
+make start-dev
 ```
-Приложение запустится по адресу `http://localhost:3000`
+Приложение запустится по адресу `http://127.0.0.1:3000` с автоматической перезагрузкой при изменении файлов.
 
 ### Продакшн
 ```bash
-npm start
+make build
+make migrate-prod
+make start-prod
 ```
 
 ## Доступные команды
 
-- `npm start` - Запуск приложения в продакшн режиме
-- `npm run dev` - Запуск сервера разработки с автоперезагрузкой
-- `npm test` - Запуск тестов
-- `npm run lint` - Запуск ESLint
-- `npm run build` - Сборка приложения
+### Основные команды
+- `make start-dev` - Запуск в режиме разработки (frontend + backend с hot reload)
+- `make start-prod` - Запуск в продакшн режиме
+
+### Управление базой данных
+- `make migrate-dev` - Применить миграции в режиме разработки
+- `make migrate-prod` - Применить миграции в режиме продакшен
+- `make rollback-dev` - Откатить последнюю миграцию в режиме разработки
+- `make rollback-prod` - Откатить последнюю миграцию в режиме продакшен
+
+### Сборка и установка
+- `make install` - Установить зависимости
+- `make build` - Собрать frontend
+
+### Качество кода
+- `make lint` - Проверить и исправить код с помощью ESLint
+- `make test` - Запустить тесты
+- `make test-coverage` - Запустить тесты с покрытием
 
 ## Переменные окружения
 
@@ -72,9 +86,10 @@ npm start
 |------------|----------|--------------|
 | `PORT` | Порт сервера | 3000 |
 | `HOST` | Хост сервера | 0.0.0.0 |
-| `DATABASE_URL` | Строка подключения к PostgreSQL | - |
-| `SESSION_KEY` | Секретный ключ для сессий | - |
-
+| `NODE_ENV` | Окружение (development/production) | development |
+| `DATABASE_URL` | Строка подключения к PostgreSQL (production) | - |
+| `SESSION_SECRET` | Секретный ключ для сессий | - |
+| `ROLLBAR_ACCESS_TOKEN` | Токен для мониторинга ошибок Rollbar | - |
 
 ## Пример
-[Запущеное приложение на Render](https://fullstack-javascript-project-6-vdk9.onrender.com/)
+[Запущенное приложение на Render](https://fullstack-javascript-project-6-vdk9.onrender.com/)

@@ -1,20 +1,11 @@
 .PHONY: 
-	setup prepare install build start start-dev start-prod migrate-dev migrate-prod rollback reset lint
-
-setup: 
-	prepare install build
-
-prepare:
-	cp -n .env.example .env || true
+	prepare install build start-dev start-prod migrate-dev migrate-prod rollback reset lint
 
 install:
 	npm ci
 
 build:
 	npm run build
-
-start:
-	npm run start
 
 start-dev:
 	@bash -c '\
@@ -27,18 +18,23 @@ start-dev:
 start-prod:
 	npm run start
 
-
 migrate-dev:
 	npm run dev:migrate
 
 migrate-prod:
 	npm run migrate
 
-rollback:
+rollback-dev:
 	npm run dev:rollback
 
-reset:
-	npm run dev:reset
+rollback-prod:
+	npm run rollback
 
 lint:
 	npm run lint:fix
+
+test:
+	npm test
+
+test-coverage:
+	npm run test:coverage
